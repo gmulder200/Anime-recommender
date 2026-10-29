@@ -9,6 +9,9 @@ def Scraper_Jikan(Mal_ID):
     data = response.json()
     studio_names = [studio["name"] for studio in data["data"]["studios"]]
     genre_names = [genre["name"] for genre in data["data"]["genres"]]
+    theme_names = [theme["name"] for theme in data["data"]["themes"]]
+    demographics = [demographic["name"] for demographic in data["data"]["demographics"]]
+
 
     anime= {
             "mal_id": data["data"]["mal_id"],
@@ -16,9 +19,19 @@ def Scraper_Jikan(Mal_ID):
             "english_title": data["data"]["title_english"],
             "score": data["data"]["score"],
             "episodes": data["data"]["episodes"],
-            "currently_airing": data["data"]["status"],
+            "airing_status": data["data"]["status"],
             "studio_name": studio_names,
-            "genres": genre_names
+            "genres": genre_names,
+            "type" : data["data"]["type"],
+            "themes" : theme_names,
+            "score_votes": data["data"]["scored_by"],
+            "approved" : data["data"]["approved"],
+            "demographics": demographics,
+            "favorites" : data["data"]["favorites"],
+            "duration" : data["data"]["duration"],
+            "year" :  data["data"]["year"],
+            "synopsis": data["data"]["synopsis"]
+
         }
     
 
