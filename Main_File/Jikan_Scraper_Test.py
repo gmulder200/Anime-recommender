@@ -1,4 +1,5 @@
 import requests
+import json
 
 def Scraper_Jikan(Mal_ID):
 
@@ -49,6 +50,9 @@ if __name__ == "__main__":
     for mal_id in mal_ids:
         anime_info_list.append(Scraper_Jikan(mal_id))
 
+    
+
+    with open("Anime_info.json","w") as f:
+        json.dump(anime_info_list,f,indent=4)
 
 
-    print(anime_info_list)
