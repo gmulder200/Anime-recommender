@@ -1,8 +1,15 @@
 import json
 
 
-
-with open("anime_info_list.json","r") as f:
+if __name__ == "__main__":
+        
+    with open("anime_info_list.json","r") as f:
         data=json.load(f)
 
-    print(data)
+    print(len(data))
+
+    for anime in data:
+        if anime["score"] >= 8.0 and anime["approved"]:
+            print(anime["main_title"])
+
+
