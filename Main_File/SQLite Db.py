@@ -1,9 +1,10 @@
 import sqlite3
 import json
+from Jikan_Scraper_Test import Scraper_Jikan
 
 connection = sqlite3.connect("anime.db")
 cur = connection.cursor()
-cur.execute("PRAGMA FOREIGN KEYS = ON")
+cur.execute("PRAGMA FOREIGN_KEYS = ON")
 
 
 
@@ -92,34 +93,131 @@ cur.execute("""CREATE TABLE IF NOT EXISTS AnimeDemographic(
     PRIMARY KEY (mal_id,demographic_id)
 )""")
 
-cur.execute("""
+def get_anime_genres(Anime_id):
+    #Initiate connection and cursor
+    connection = sqlite3.connect("anime.db")
+    cur = connection.cursor()
 
-""")
+    #Create a Selector which gives genres based on mal_id
+    res = cur.execute("""
+        SELECT genre.name
+        FROM AnimeGenre
+        JOIN genre ON genre.genre_id = AnimeGenre.genre_id
+        WHERE AnimeGenre.mal_id = ?
+        """, (Anime_id,))
 
+    
 
-
-
-
-
-
-
-
-
-
-### Sort of function to insert test into anime
-sql = """INSERT INTO anime(mal_id,title,score,approved)
- VALUES (?,?,?,?)
- ON CONFLICT(mal_id) DO UPDATE SET
-    title=excluded.title,
-    score=excluded.score,
-    approved=excluded.approved
- """
+    #Fetch the genres and return them
+    genres = res.fetchall()
+    connection.close()
+    return(genres)
 
 
-cur.execute(sql, (52991, "Example Anime", 9, 1))
+def add_anime(anime):
+    connection = sqlite3.connect("anime.db")
+    cur = connection.cursor()
+    cur.execute("PRAGMA foreign_keys = ON")
 
-res = cur.execute("SELECT * FROM anime")
-print(res.fetchall())
+    cur.execute("""INSERT INTO anime(mal_id,main_title,english_title,score,episodes,airing_status,approved,type,score_votes,favorites,duration,year,synopsis)
+    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)
+    ON CONFLICT(mal_id) DO UPDATE SET
+        main_title=excluded.main_title,
+        english_title=excluded.english_title,
+        score=excluded.score,
+        episodes=excluded.episodes,
+        airing_status=excluded.airing_status,
+        approved=excluded.approved,
+        type=excluded.type,
+        score_votes=excluded.score_votes,
+        favorites=excluded.favorites,
+        duration=excluded.duration,
+        year=excluded.year,
+        synopsis=excluded.synopsis
+    """,(anime["mal_id"],anime["main_title"],anime["english_title"],anime["score"],anime["episodes"],anime["airing_status"],anime["approved"],anime["type"],anime["score_votes"],anime["favorites"],anime["duration"],anime["year"],anime["synopsis"]) )
+
+    #For Loop to add genre to its own table(creating Genre_id in the process) and then also fetching that Genre_ID and then adding that and MAL_ID to the connection TABLE
+    for genre in anime["genres"]:
+        cur.execute("""INSERT OR IGNORE INTO genre(name)
+        VALUES(?)""",(genre,))
+        res = cur.execute("""SELECT genre_id
+        FROM genre
+        WHERE name = ?
+        """,(genre,))
+
+        genre_id = res.fetchone()[0]
+
+        cur.execute("""INSERT OR IGNORE INTO AnimeGenre(mal_id,genre_id)
+        VALUES(?,?)
+          """,(anime["mal_id"],genre_id))
+
+
+    #For Loop to add studio to its own table(creating studio_id in the process) and then also fetching that studio_id and then adding that and MAL_ID to the connection TABLE
+    for studio in anime["studio_name"]:
+        cur.execute("""INSERT OR IGNORE INTO studio(name)
+        VALUES(?)""",(studio,))
+        res = cur.execute("""SELECT studio_id
+        FROM studio
+        WHERE name = ?
+        """,(studio,))
+
+        studio_id = res.fetchone()[0]
+
+        cur.execute("""INSERT OR IGNORE INTO AnimeStudio(mal_id,studio_id)
+        VALUES(?,?)
+          """,(anime["mal_id"],studio_id))
+    
+    #For Loop to add themes to its own table(creating theme_id in the process) and then also fetching that theme_id and then adding that and MAL_ID to the connection TABLE
+    for theme in anime["themes"]:
+        cur.execute("""INSERT OR IGNORE INTO themes(name)
+        VALUES(?)""",(theme,))
+        res = cur.execute("""SELECT theme_id
+        FROM themes
+        WHERE name = ?
+        """,(theme,))
+
+        theme_id = res.fetchone()[0]
+
+        cur.execute("""INSERT OR IGNORE INTO AnimeThemes(mal_id,theme_id)
+        VALUES(?,?)
+          """,(anime["mal_id"],theme_id))    
+
+    #For Loop to add themes to its own table(creating theme_id in the process) and then also fetching that theme_id and then adding that and MAL_ID to the connection TABLE
+    for demographic in anime["demographics"]:
+        cur.execute("""INSERT OR IGNORE INTO demographic(name)
+        VALUES(?)""",(demographic,))
+        res = cur.execute("""SELECT demographic_id
+        FROM demographic
+        WHERE name = ?
+        """,(demographic,))
+
+        demographic_id = res.fetchone()[0]
+
+        cur.execute("""INSERT OR IGNORE INTO AnimeDemographic(mal_id,demographic_id)
+        VALUES(?,?)
+          """,(anime["mal_id"],demographic_id))        
+    connection.commit()
+    connection.close()
+
+
+
+
+
+
+
+
+
+
+
+
+
+anime = Scraper_Jikan(52991)
+add_anime(anime)
+
+genres = get_anime_genres(52991)
+print(genres)
+
+
 
 connection.commit()
 connection.close()
