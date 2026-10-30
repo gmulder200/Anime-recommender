@@ -6,7 +6,6 @@ def Scraper_Jikan(Mal_ID):
     url = f'https://api.tenrai.org/v1/anime/{Mal_ID}/full'
 
     response = requests.get(url, timeout=15)
-    print(response.status_code)
     data = response.json()
     studio_names = [studio["name"] for studio in data["data"]["studios"]]
     genre_names = [genre["name"] for genre in data["data"]["genres"]]
