@@ -1,5 +1,5 @@
 import json
-from Jikan_Scraper_Test import Scraper_Jikan
+from Tenrai_API_Animedata import Scraper_Tenrai
 import SQLite_Db
 
 
@@ -12,26 +12,30 @@ import SQLite_Db
 
 
 
-anime = Scraper_Jikan(54492)
+
+anime = Scraper_Tenrai(918)
 SQLite_Db.add_anime(anime)
 
-genres = SQLite_Db.get_anime_genres(54492)
+genres = SQLite_Db.get_anime_genres(1)
 
 
-studios = SQLite_Db.get_anime_studio(54492)
+studios = SQLite_Db.get_anime_studio(1)
 
 
-themes = SQLite_Db.get_anime_themes(54492)
+themes = SQLite_Db.get_anime_themes(1)
 
-demographics = SQLite_Db.get_anime_demographics(54492)
+demographics = SQLite_Db.get_anime_demographics(1)
+
+print(SQLite_Db.anime_count())
+print(SQLite_Db.genre_count())
+print(SQLite_Db.studio_count())
+print(SQLite_Db.theme_count())
+print(SQLite_Db.demographic_count())
 
 
 
-
-
-
-info = SQLite_Db.get_anime(52991)
-print(info)
+info = SQLite_Db.get_anime(918)
+#print(info)
 
 
 

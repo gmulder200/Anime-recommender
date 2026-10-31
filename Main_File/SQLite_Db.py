@@ -245,7 +245,6 @@ def add_anime(anime):
     connection.commit()
     connection.close()
 
-
 def get_anime(mal_id):
     connection = sqlite3.connect("anime.db")
     connection.row_factory = sqlite3.Row
@@ -275,4 +274,53 @@ def get_anime(mal_id):
     connection.close()
     return(anime_info)
 
+def anime_count():
 
+    connection = sqlite3.connect("anime.db")
+    cur = connection.cursor()
+
+    cur.execute("SELECT COUNT(*) FROM anime")
+    count = cur.fetchone()[0]
+
+    connection.close()
+    return count
+
+def genre_count():
+    connection = sqlite3.connect("anime.db")
+    cur = connection.cursor()
+    
+    cur.execute("SELECT COUNT(*) FROM genre")
+    count = cur.fetchone()[0]
+    
+    connection.close()
+    return count
+    
+def studio_count():
+    connection = sqlite3.connect("anime.db")
+    cur = connection.cursor()
+    
+    cur.execute("SELECT COUNT(*) FROM studio")
+    count = cur.fetchone()[0]
+    
+    connection.close()
+    return count
+    
+def theme_count():
+    connection = sqlite3.connect("anime.db")
+    cur = connection.cursor()
+    
+    cur.execute("SELECT COUNT(*) FROM themes")
+    count = cur.fetchone()[0]
+    
+    connection.close()
+    return count
+
+def demographic_count():
+    connection = sqlite3.connect("anime.db")
+    cur = connection.cursor()
+    
+    cur.execute("SELECT COUNT(*) FROM demographic")
+    count = cur.fetchone()[0]
+    
+    connection.close()
+    return count

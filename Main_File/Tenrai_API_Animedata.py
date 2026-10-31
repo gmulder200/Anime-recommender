@@ -1,7 +1,7 @@
 import requests
 import json
 
-def Scraper_Jikan(Mal_ID):
+def Scraper_Tenrai(Mal_ID):
 
     url = f'https://api.tenrai.org/v1/anime/{Mal_ID}/full'
 
@@ -40,6 +40,10 @@ def Scraper_Jikan(Mal_ID):
 
     return anime
 
+
+
+#def get_anime_id():
+    #url = https://api.tenrai.org/v1/anime/ids
 
 
 if __name__ == "__main__":
