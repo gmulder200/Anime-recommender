@@ -91,27 +91,75 @@ def create_database():
         PRIMARY KEY (mal_id,demographic_id)
     )""")
 
-def get_anime_genres(Anime_id):
+def get_anime_genres(MAL_id):
     #Initiate connection and cursor
     connection = sqlite3.connect("anime.db")
     cur = connection.cursor()
 
     #Create a Selector which gives genres based on mal_id
-    res = cur.execute("""
+    cur.execute("""
         SELECT genre.name
         FROM AnimeGenre
         JOIN genre ON genre.genre_id = AnimeGenre.genre_id
         WHERE AnimeGenre.mal_id = ?
-        """, (Anime_id,))
-
-    
+        """, (MAL_id,))
 
     #Fetch the genres and return them
-    genres = res.fetchall()
+    genres = cur.fetchall()
     connection.close()
-    return(genres)
+    return [row[0] for row in genres]
 
+def get_anime_studio(MAL_id):
+    #Initiate connection and cursor
+    connection = sqlite3.connect("anime.db")
+    cur = connection.cursor()
+    
+    #Create a Selector which gives studio based on mal_id
+    cur.execute("""
+        SELECT studio.name
+        FROM AnimeStudio
+        JOIN studio ON studio.studio_id = AnimeStudio.studio_id
+        WHERE AnimeStudio.mal_id = ?
+        """, (MAL_id,))
+    #Fetch the studios and return them
+    studios = cur.fetchall()
+    connection.close()
+    return [row[0] for row in studios]
 
+def get_anime_themes(MAL_id):
+    #Initiate connection and cursor
+    connection = sqlite3.connect("anime.db")
+    cur = connection.cursor()
+        
+    #Create a Selector which gives theme based on mal_id
+    cur.execute("""
+        SELECT themes.name
+        FROM AnimeThemes
+        JOIN themes ON themes.theme_id = AnimeThemes.theme_id
+        WHERE AnimeThemes.mal_id = ?
+        """, (MAL_id,))
+    #Fetch the theme and return them
+    themes = cur.fetchall()
+    connection.close()
+    return [row[0] for row in themes]
+
+def get_anime_demographics(MAL_id):
+    #Initiate connection and cursor
+    connection = sqlite3.connect("anime.db")
+    cur = connection.cursor()
+        
+    #Create a Selector which gives demographic based on mal_id
+    cur.execute("""
+        SELECT demographic.name
+        FROM AnimeDemographic
+        JOIN demographic ON demographic.demographic_id = AnimeDemographic.demographic_id
+        WHERE AnimeDemographic.mal_id = ?
+        """, (MAL_id,))
+    #Fetch the demographic and return them
+    demographic = cur.fetchall()
+    connection.close()
+    return [row[0] for row in demographic]
+    
 def add_anime(anime):
     connection = sqlite3.connect("anime.db")
     cur = connection.cursor()
@@ -198,5 +246,33 @@ def add_anime(anime):
     connection.close()
 
 
-if __name__ == "__main__":
+def get_anime(mal_id):
+    connection = sqlite3.connect("anime.db")
+    connection.row_factory = sqlite3.Row
+    cur = connection.cursor()
+
+    cur.execute("""
+        SELECT *
+        FROM anime
+        WHERE anime.mal_id = ?
+        """, (mal_id,))
+
+    anime_info = cur.fetchone()
+    if anime_info is not None:
+        anime_info = dict(anime_info)
+
+        genres = get_anime_genres(mal_id)
+        studio = get_anime_studio(mal_id)
+        themes = get_anime_themes(mal_id)
+        demographics = get_anime_demographics(mal_id)
+    
+        anime_info["genres"]= genres
+        anime_info["studio_name"]= studio
+        anime_info["themes"]= themes
+        anime_info["demographics"]= demographics
+
+    
+    connection.close()
+    return(anime_info)
+
 

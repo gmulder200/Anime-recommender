@@ -1,6 +1,6 @@
 import json
 from Jikan_Scraper_Test import Scraper_Jikan
-from SQLite_Db import add_anime, get_anime_genres
+import SQLite_Db
 
 
 #connection = sqlite3.connect("anime.db")
@@ -12,11 +12,27 @@ from SQLite_Db import add_anime, get_anime_genres
 
 
 
-anime = Scraper_Jikan(61967)
-add_anime(anime)
+anime = Scraper_Jikan(54492)
+SQLite_Db.add_anime(anime)
 
-genres = get_anime_genres(52991)
-print(genres)
+genres = SQLite_Db.get_anime_genres(54492)
+
+
+studios = SQLite_Db.get_anime_studio(54492)
+
+
+themes = SQLite_Db.get_anime_themes(54492)
+
+demographics = SQLite_Db.get_anime_demographics(54492)
+
+
+
+
+
+
+info = SQLite_Db.get_anime(52991)
+print(info)
+
 
 
 
