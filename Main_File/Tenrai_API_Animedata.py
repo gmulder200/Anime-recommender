@@ -1,11 +1,16 @@
 import requests
 import json
+from dotenv import load_dotenv
+
+load_dotenv()
+API_KEY = os.getenv("TENRAI_API_KEY")
 
 def Scraper_Tenrai(Mal_ID):
 
     url = f'https://api.tenrai.org/v1/anime/{Mal_ID}/full'
-
-    response = requests.get(url, timeout=15)
+    headers = {'X-Server-Key': API_KEY}
+    response = requests.get(url,headers=headers,timeout=15)
+    response.raise_for_status()
     data = response.json()
     studio_names = [studio["name"] for studio in data["data"]["studios"]]
     genre_names = [genre["name"] for genre in data["data"]["genres"]]
@@ -35,15 +40,32 @@ def Scraper_Tenrai(Mal_ID):
         }
     
 
-
-    response.raise_for_status()
-
     return anime
 
 
 
-#def get_anime_id():
-    #url = https://api.tenrai.org/v1/anime/ids
+def get_anime_id():
+    url = f'https://api.tenrai.org/v1/anime/ids' 
+    params = {
+        "type" : ["tv","movie","ova","special","ona","tv_special"]
+    }
+    headers = {'X-Server-Key': API_KEY}
+
+    response = requests.get(url,headers=headers, params=params ,timeout=15)
+    response.raise_for_status()
+    data = response.json()
+
+    with open("MAL_ID_LIST.json","w") as f:
+        json.dump(data,f,indent=4)
+
+
+    return data
+
+
+
+
+
+
 
 
 if __name__ == "__main__":
@@ -51,7 +73,7 @@ if __name__ == "__main__":
     anime_info_list = []
     mal_ids = [52991, 61987, 61440]
     for mal_id in mal_ids:
-        anime_info_list.append(Scraper_Jikan(mal_id))
+        anime_info_list.append(Scraper_Tenrai(mal_id))
 
     
 

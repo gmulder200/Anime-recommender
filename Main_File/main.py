@@ -1,5 +1,5 @@
 import json
-from Tenrai_API_Animedata import Scraper_Tenrai
+from Tenrai_API_Animedata import Scraper_Tenrai, get_anime_id
 import SQLite_Db
 
 
@@ -11,10 +11,8 @@ import SQLite_Db
 # MAL_ID : 52991, 
 
 
-
-
-anime = Scraper_Tenrai(918)
-SQLite_Db.add_anime(anime)
+#anime = Scraper_Tenrai(918)
+#SQLite_Db.add_anime(anime)
 
 genres = SQLite_Db.get_anime_genres(1)
 
@@ -38,6 +36,8 @@ info = SQLite_Db.get_anime(918)
 #print(info)
 
 
+
+SQLite_Db.ImportUpdate_database()
 
 
 

@@ -1,4 +1,7 @@
 import sqlite3
+from Tenrai_API_Animedata import get_anime_id, Scraper_Tenrai
+import time
+import requests
 
 def create_database():
 
@@ -324,3 +327,72 @@ def demographic_count():
     
     connection.close()
     return count
+
+def get_anime_name(mal_id):
+    connection = sqlite3.connect("anime.db")
+    cur = connection.cursor()
+
+    cur.execute("""
+                SELECT anime.main_title
+                FROM anime
+                WHERE anime.mal_id = ?
+                """, (mal_id,))
+    anime_title = cur.fetchone()
+    connection.close()
+    return anime_title[0] if anime_title is not None else None
+
+
+def ImportUpdate_database():
+    connection = sqlite3.connect("anime.db")
+    cur = connection.cursor()
+
+    print("=== Anime Database Importer ===")
+    print("1. Add New Anime")
+    print("2. Update Anime")
+    print("3. Update and Add Anime")
+
+    choice = input("Choose an option (1-3): ")
+    mal_data = get_anime_id()
+    counter= 0
+    match choice:
+        case "1":
+            print("New Anime")
+            for mal_id in mal_data["data"]:
+                cur.execute("""SELECT anime.mal_id 
+                                        FROM anime
+                                        WHERE anime.mal_id = ? 
+                                        """,(mal_id,))
+                mal_check = cur.fetchone()
+                counter +=1
+                
+                if mal_check is None:
+                    try:
+                        anime_info = Scraper_Tenrai(mal_id)
+                        if anime_info is not None: 
+                            add_anime(anime_info)
+                            time.sleep(0.25)
+                            print(f"[{counter}/{mal_data['total']}] Added: {anime_info['main_title']}")
+                    except requests.exceptions.Timeout:
+                        print(f"[{counter}/{mal_data['total']}] Timeout: {mal_id}")
+                    except requests.exceptions.HTTPError as e:
+                        print(f"[{counter}/{mal_data['total']}] HTTP error: {e}")
+                    except requests.exceptions.RequestException as e:
+                        print(f"[{counter}/{mal_data['total']}] Request failed: {e}") 
+                else:
+                    anime_name =  get_anime_name(mal_id)
+                    print(f"[{counter}/{mal_data['total']}] Skipped: {anime_name}")
+
+        case "2":
+            print("Update Anime")
+        case "3":
+            print("Update and Add anime")
+        case _:
+            print("Invalid selection")
+
+
+
+    #data = get_anime_id()
+
+    #for mal_id in data["data"]
+
+
