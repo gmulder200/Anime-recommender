@@ -185,6 +185,13 @@ def add_anime(anime):
         synopsis=excluded.synopsis
     """,(anime["mal_id"],anime["main_title"],anime["english_title"],anime["score"],anime["episodes"],anime["airing_status"],anime["approved"],anime["type"],anime["score_votes"],anime["favorites"],anime["duration"],anime["year"],anime["synopsis"]) )
 
+    cur.execute("DELETE FROM AnimeGenre WHERE mal_id = ?", (anime["mal_id"],))
+    cur.execute("DELETE FROM AnimeStudio WHERE mal_id = ?", (anime["mal_id"],))
+    cur.execute("DELETE FROM AnimeThemes WHERE mal_id = ?", (anime["mal_id"],))
+    cur.execute("DELETE FROM AnimeDemographic WHERE mal_id = ?", (anime["mal_id"],))
+
+
+
     #For Loop to add genre to its own table(creating Genre_id in the process) and then also fetching that Genre_ID and then adding that and MAL_ID to the connection TABLE
     for genre in anime["genres"]:
         cur.execute("""INSERT OR IGNORE INTO genre(name)
@@ -341,12 +348,22 @@ def get_anime_name(mal_id):
     connection.close()
     return anime_title[0] if anime_title is not None else None
 
+def get_all_mal_ID():
+    connection = sqlite3.connect("anime.db")
+    cur = connection.cursor()
+
+    cur.execute("SELECT mal_id FROM anime")
+    mal_ids = [row[0] for row in cur.fetchall()]
+
+    return mal_ids
+    
+
 
 def ImportUpdate_database():
     connection = sqlite3.connect("anime.db")
     cur = connection.cursor()
 
-    print("=== Anime Database Importer ===")
+    print("= Anime Database Importer =")
     print("1. Add New Anime")
     print("2. Update Anime")
     print("3. Update and Add Anime")
@@ -356,7 +373,6 @@ def ImportUpdate_database():
     counter= 0
     match choice:
         case "1":
-            print("New Anime")
             for mal_id in mal_data["data"]:
                 cur.execute("""SELECT anime.mal_id 
                                         FROM anime
@@ -372,6 +388,8 @@ def ImportUpdate_database():
                             add_anime(anime_info)
                             time.sleep(0.25)
                             print(f"[{counter}/{mal_data['total']}] Added: {anime_info['main_title']}")
+                        else: 
+                            print(f"[{counter}/{mal_data['total']}] Skipped Due to repearted 429 Response, MAL ID {mal_id}")
                     except requests.exceptions.Timeout:
                         print(f"[{counter}/{mal_data['total']}] Timeout: {mal_id}")
                     except requests.exceptions.HTTPError as e:
@@ -383,16 +401,47 @@ def ImportUpdate_database():
                     print(f"[{counter}/{mal_data['total']}] Skipped: {anime_name}")
 
         case "2":
-            print("Update Anime")
+            mal_id_dblist = get_all_mal_ID()
+
+            for mal_id in mal_id_dblist:
+                counter +=1
+                try:
+                    anime_info = Scraper_Tenrai(mal_id)
+                    if anime_info is not None:
+                        add_anime(anime_info)
+                        time.sleep(0.25)
+                        print(f"[{counter}/{len(mal_id_dblist)}] Updated: {anime_info['main_title']}")
+                    else: 
+                        print(f"[{counter}/{len(mal_id_dblist)}] Skipped Due to repearted 429 Response, MAL ID {mal_id}")
+                except requests.exceptions.Timeout:
+                    print(f"[{counter}/{len(mal_id_dblist)}] Timeout: {mal_id}")
+                except requests.exceptions.HTTPError as e:
+                    print(f"[{counter}/{len(mal_id_dblist)}] HTTP error: {e}")
+                except requests.exceptions.RequestException as e:
+                    print(f"[{counter}/{len(mal_id_dblist)}] Request failed: {e}") 
+
         case "3":
-            print("Update and Add anime")
+            for mal_id in mal_data["data"]:
+                counter +=1
+                try:
+                    anime_info = Scraper_Tenrai(mal_id)
+                    if anime_info is not None: 
+                        add_anime(anime_info)
+                        time.sleep(0.25)
+                        print(f"[{counter}/{mal_data['total']}] Added: {anime_info['main_title']}")
+                    else: 
+                        print(f"[{counter}/{mal_data['total']}] Skipped Due to repearted 429 Response, MAL ID {mal_id}")
+                except requests.exceptions.Timeout:
+                    print(f"[{counter}/{mal_data['total']}] Timeout: {mal_id}")
+                except requests.exceptions.HTTPError as e:
+                    print(f"[{counter}/{mal_data['total']}] HTTP error: {e}")
+                except requests.exceptions.RequestException as e:
+                    print(f"[{counter}/{mal_data['total']}] Request failed: {e}") 
+
         case _:
             print("Invalid selection")
+    connection.close()
 
 
-
-    #data = get_anime_id()
-
-    #for mal_id in data["data"]
 
 

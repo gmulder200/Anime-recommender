@@ -11,28 +11,28 @@ import SQLite_Db
 # MAL_ID : 52991, 
 
 
-#anime = Scraper_Tenrai(918)
+#anime = Scraper_Tenrai(1)
 #SQLite_Db.add_anime(anime)
 
-genres = SQLite_Db.get_anime_genres(1)
+#genres = SQLite_Db.get_anime_genres(1)
+#print(genres)
+
+#studios = SQLite_Db.get_anime_studio(1)
 
 
-studios = SQLite_Db.get_anime_studio(1)
+#themes = SQLite_Db.get_anime_themes(1)
 
+#demographics = SQLite_Db.get_anime_demographics(1)
 
-themes = SQLite_Db.get_anime_themes(1)
-
-demographics = SQLite_Db.get_anime_demographics(1)
-
-print(SQLite_Db.anime_count())
-print(SQLite_Db.genre_count())
-print(SQLite_Db.studio_count())
-print(SQLite_Db.theme_count())
-print(SQLite_Db.demographic_count())
+#print(SQLite_Db.anime_count())
+#print(SQLite_Db.genre_count())
+#print(SQLite_Db.studio_count())
+#print(SQLite_Db.theme_count())
+#print(SQLite_Db.demographic_count())
 
 
 
-info = SQLite_Db.get_anime(918)
+#info = SQLite_Db.get_anime(918)
 #print(info)
 
 
