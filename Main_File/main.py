@@ -37,7 +37,7 @@ import SQLite_Db
 
 
 
-SQLite_Db.ImportUpdate_database()
+#SQLite_Db.ImportUpdate_database()
 
 
 
