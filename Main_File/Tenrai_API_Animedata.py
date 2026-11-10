@@ -17,7 +17,7 @@ def Scraper_Tenrai(Mal_ID):
     while True:
         response = requests.get(url,headers=headers,timeout=15)
         if response.status_code == 429:
-            ounter +=1
+            counter +=1
             if counter >= 10:
                 print("Too many 429 response Skipping Anime...")
                 return None
