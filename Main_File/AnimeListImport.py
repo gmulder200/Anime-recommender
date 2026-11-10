@@ -2,7 +2,7 @@ import xml.etree.ElementTree as ET
 import json
 
 #Sets the path to the XML file and parses it
-tree = ET.parse("animelist_1793741655_-_14096163.xml")
+tree = ET.parse("animelist.xml")
 root = tree.getroot()
 
 # Creates a dictionary to store the anime scores and iterates through the XML data to fill it

@@ -1,7 +1,7 @@
 .env
 __pycache__/
 *.pyc
-animelist_1793741655_-_14096163.xml
+animelist.xml
 
 # Local databases
 *.db
