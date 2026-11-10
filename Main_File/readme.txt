@@ -3,6 +3,8 @@ Gertjan Mulder
 
 Project Goal :
 Create a personal anime recommender which given an input of a myanimelist.net animelist recommends a certain amount of anime according the recommender.
+In addition the to the creation of the recommender another goal was to keep coding after finish my Degree. 
+The project was not VibeCoded via AI. AI was used as a helper but was ordered to never give code and only as a advisor or priority advisor.
 
 Files :
 AnimeListImport.py
