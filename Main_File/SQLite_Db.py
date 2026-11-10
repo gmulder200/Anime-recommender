@@ -2,7 +2,7 @@ import sqlite3
 from Tenrai_API_Animedata import get_anime_id, Scraper_Tenrai
 import time
 import requests
-
+# Function which creates the database and all the tables needed for the anime database
 def create_database():
 
     connection = sqlite3.connect("anime.db")
@@ -94,6 +94,7 @@ def create_database():
         PRIMARY KEY (mal_id,demographic_id)
     )""")
 
+#Fetches the genres for a given MAL_id from the database and returns them as a list
 def get_anime_genres(MAL_id):
     #Initiate connection and cursor
     connection = sqlite3.connect("anime.db")
@@ -112,6 +113,7 @@ def get_anime_genres(MAL_id):
     connection.close()
     return [row[0] for row in genres]
 
+#Fetches the studios for a given MAL_id from the database and returns them as a list
 def get_anime_studio(MAL_id):
     #Initiate connection and cursor
     connection = sqlite3.connect("anime.db")
@@ -129,6 +131,7 @@ def get_anime_studio(MAL_id):
     connection.close()
     return [row[0] for row in studios]
 
+#Fetches the themes for a given MAL_id from the database and returns them as a list
 def get_anime_themes(MAL_id):
     #Initiate connection and cursor
     connection = sqlite3.connect("anime.db")
@@ -146,6 +149,7 @@ def get_anime_themes(MAL_id):
     connection.close()
     return [row[0] for row in themes]
 
+#Fetches the demographics for a given MAL_id from the database and returns them as a list
 def get_anime_demographics(MAL_id):
     #Initiate connection and cursor
     connection = sqlite3.connect("anime.db")
@@ -162,7 +166,8 @@ def get_anime_demographics(MAL_id):
     demographic = cur.fetchall()
     connection.close()
     return [row[0] for row in demographic]
-    
+
+# Function to add an anime to the database, including its genres, studios, themes, and demographics. If the anime already exists, it updates the existing record.  
 def add_anime(anime):
     connection = sqlite3.connect("anime.db")
     cur = connection.cursor()
@@ -255,6 +260,7 @@ def add_anime(anime):
     connection.commit()
     connection.close()
 
+# Function to get all information about an anime from the database based on its MAL_ID. It returns a dictionary containing the anime's details, including its genres, studios, themes, and demographics.
 def get_anime(mal_id):
     connection = sqlite3.connect("anime.db")
     connection.row_factory = sqlite3.Row
@@ -284,6 +290,7 @@ def get_anime(mal_id):
     connection.close()
     return(anime_info)
 
+# Function to get the total count of anime entries in the database. It returns the count as an integer.
 def anime_count():
 
     connection = sqlite3.connect("anime.db")
@@ -295,6 +302,7 @@ def anime_count():
     connection.close()
     return count
 
+# Function to get the total count of genre entries in the database. It returns the count as an integer.
 def genre_count():
     connection = sqlite3.connect("anime.db")
     cur = connection.cursor()
@@ -304,7 +312,8 @@ def genre_count():
     
     connection.close()
     return count
-    
+
+# Function to get the total count of studio entries in the database. It returns the count as an integer.
 def studio_count():
     connection = sqlite3.connect("anime.db")
     cur = connection.cursor()
@@ -314,7 +323,8 @@ def studio_count():
     
     connection.close()
     return count
-    
+
+# Function to get the total count of theme entries in the database. It returns the count as an integer.
 def theme_count():
     connection = sqlite3.connect("anime.db")
     cur = connection.cursor()
@@ -325,6 +335,7 @@ def theme_count():
     connection.close()
     return count
 
+# Function to get the total count of demographic entries in the database. It returns the count as an integer.
 def demographic_count():
     connection = sqlite3.connect("anime.db")
     cur = connection.cursor()
@@ -335,6 +346,7 @@ def demographic_count():
     connection.close()
     return count
 
+# Function to get the main title of an anime based on its MAL_ID. It returns the title as a string, or None if the anime is not found in the database.
 def get_anime_name(mal_id):
     connection = sqlite3.connect("anime.db")
     cur = connection.cursor()
@@ -348,6 +360,7 @@ def get_anime_name(mal_id):
     connection.close()
     return anime_title[0] if anime_title is not None else None
 
+# Function to get all MAL_IDs from the anime table in the database. It returns a list of MAL_IDs.
 def get_all_mal_ID():
     connection = sqlite3.connect("anime.db")
     cur = connection.cursor()
@@ -356,9 +369,9 @@ def get_all_mal_ID():
     mal_ids = [row[0] for row in cur.fetchall()]
 
     return mal_ids
-    
 
-
+# Function to import or update the anime database based on user selection. It allows adding new anime, updating existing anime, or both. The function fetches MAL_IDs from the Tenrai API and processes them accordingly and according to the API max requests speed.
+# In addition it makes sure that the program does not crash when a request fails due to a timeout or other HTTP errors. It also handles the case where the Tenrai API returns a 429 response (too many requests) by skipping that MAL_ID and continuing with the next one.
 def ImportUpdate_database():
     connection = sqlite3.connect("anime.db")
     cur = connection.cursor()

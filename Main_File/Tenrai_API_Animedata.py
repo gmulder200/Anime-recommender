@@ -7,6 +7,7 @@ import time
 load_dotenv()
 API_KEY = os.getenv("TENRAI_API_KEY")
 
+# Scraper API function that takes a MAL_ID as input and returns a dictionary with anime information
 def Scraper_Tenrai(Mal_ID):
 
     url = f'https://api.tenrai.org/v1/anime/{Mal_ID}/full'
@@ -28,6 +29,7 @@ def Scraper_Tenrai(Mal_ID):
         response.raise_for_status()
         break
 
+    
     data = response.json()
     studio_names = [studio["name"] for studio in data["data"]["studios"]]
     genre_names = [genre["name"] for genre in data["data"]["genres"]]
@@ -58,7 +60,7 @@ def Scraper_Tenrai(Mal_ID):
     return anime
 
 
-
+# Function to get a list of MAL_IDs from the Tenrai API and save it to a JSON file
 def get_anime_id():
     url = f'https://api.tenrai.org/v1/anime/ids' 
     params = {
