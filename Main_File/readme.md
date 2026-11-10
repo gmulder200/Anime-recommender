@@ -11,6 +11,9 @@ This project is developed independently as a personal programming project. AI to
 They are used exclusively as an advisor, for example when discussing implementation approaches, troubleshooting problems or determining development priorities. 
 All code is written and implemented by myself.
 
+Commits :
+Commits made by either gmulder2000 or gmulder200 are both mine.
+
 
 Files :
 AnimeListImport.py
