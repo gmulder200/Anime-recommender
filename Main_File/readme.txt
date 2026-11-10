@@ -4,7 +4,13 @@ Gertjan Mulder
 Project Goal :
 Create a personal anime recommender which given an input of a myanimelist.net animelist recommends a certain amount of anime according the recommender.
 In addition the to the creation of the recommender another goal was to keep coding after finish my Degree. 
-The project was not VibeCoded via AI. AI was used as a helper but was ordered to never give code and only as a advisor or priority advisor.
+
+
+Development Approach:
+This project is developed independently as a personal programming project. AI tools are used as a supporting resource, but not as a code generator. 
+They are used exclusively as an advisor, for example when discussing implementation approaches, troubleshooting problems or determining development priorities. 
+All code is written and implemented by myself.
+
 
 Files :
 AnimeListImport.py
@@ -22,3 +28,12 @@ SQLite_Db.py
 Tenrai_API_Animedata.py
     - File which controls the import of the animedata from the Tenrai API. Consists of 2 functions one which fetches anime data when given a anime ID. The other fetches all available anime ID within the given parameters.
 
+Technologies/Libraries Used:
+    -Python
+    -SQLite
+    -JSON
+    -XML
+    -Rest API (Tenrai)
+
+Status :
+Currently Unfinished, The Database and data import functions are almost fully developed in addition to the importing of the animelist information.
