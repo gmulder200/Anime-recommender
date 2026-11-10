@@ -1,3 +1,17 @@
 .env
 __pycache__/
 *.pyc
+animelist_1793741655_-_14096163.xml
+
+# Local databases
+*.db
+*.sqlite
+*.sqlite3
+
+# Personal anime data
+anime_scores
+*.json
+
+# Environment and editor files
+.env.*
+.vscode/
